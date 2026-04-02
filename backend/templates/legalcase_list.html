@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Legalcases | NexusLegal{% endblock %}
+{% block page_title %}Legalcases{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search legalcases...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Case Type</option>
+      <option value="civil" {% if status_filter == 'civil' %}selected{% endif %}>Civil</option>
+      <option value="criminal" {% if status_filter == 'criminal' %}selected{% endif %}>Criminal</option>
+      <option value="corporate" {% if status_filter == 'corporate' %}selected{% endif %}>Corporate</option>
+      <option value="family" {% if status_filter == 'family' %}selected{% endif %}>Family</option>
+      <option value="ip" {% if status_filter == 'ip' %}selected{% endif %}>IP</option>
+      <option value="labor" {% if status_filter == 'labor' %}selected{% endif %}>Labor</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/legalcases/create/" class="btn btn-primary">+ New LegalCase</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Title</th><th>Case Number</th><th>Client Name</th><th>Case Type</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/legalcases/{{ r.pk }}/edit/"><strong>{{ r.title }}</strong></a></td>
+        <td>{{ r.case_number|default:"-" }}</td>
+        <td>{{ r.client_name|default:"-" }}</td>
+        <td><span class="badge badge-blue">{{ r.get_case_type_display }}</span></td>
+        <td><span class="badge badge-blue">{{ r.get_status_display }}</span></td>
+        <td class="actions">
+          <a href="/legalcases/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/legalcases/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No legalcases found.</p>
+    <a href="/legalcases/create/" class="btn btn-primary" style="margin-top:1rem">Create LegalCase</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
