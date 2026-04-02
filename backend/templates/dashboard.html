@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | NexusLegal{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">Total Legalcases</div>
+    <div class="stat-value">{{ legalcase_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Legalclients</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#10b981,#06b6d4);-webkit-background-clip:text;background-clip:text">{{ legalclient_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Legaltimeentries</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#f59e0b,#f97316);-webkit-background-clip:text;background-clip:text">{{ legaltimeentry_count }}</div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+    <h3>Recent Legalcases</h3>
+    <a href="/legalcases/create/" class="btn btn-primary btn-sm">+ New LegalCase</a>
+  </div>
+  {% if recent %}
+  <table>
+    <thead>
+      <tr><th>Title</th><th>Case Number</th><th>Client Name</th><th>Case Type</th><th>Status</th><th>Created</th></tr>
+    </thead>
+    <tbody>
+      {% for r in recent %}
+      <tr>
+        <td><a href="/legalcases/{{ r.pk }}/edit/">{{ r.title }}</a></td>
+        <td>{{ r.case_number|default:"-" }}</td><td>{{ r.client_name|default:"-" }}</td><td><span class="badge badge-blue">{{ r.get_case_type_display }}</span></td><td><span class="badge badge-blue">{{ r.get_status_display }}</span></td><td style="color:var(--muted)">{{ r.created_at|date:"M d, Y" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No records yet.</p>
+    <a href="/legalcases/create/" class="btn btn-primary" style="margin-top:1rem">Create First LegalCase</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
