@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Legaltimeentries | NexusLegal{% endblock %}
+{% block page_title %}Legaltimeentries{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search legaltimeentries...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Activity</option>
+      <option value="research" {% if status_filter == 'research' %}selected{% endif %}>Research</option>
+      <option value="drafting" {% if status_filter == 'drafting' %}selected{% endif %}>Drafting</option>
+      <option value="court" {% if status_filter == 'court' %}selected{% endif %}>Court</option>
+      <option value="meeting" {% if status_filter == 'meeting' %}selected{% endif %}>Meeting</option>
+      <option value="review" {% if status_filter == 'review' %}selected{% endif %}>Review</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/legaltimeentries/create/" class="btn btn-primary">+ New LegalTimeEntry</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Case Title</th><th>Attorney</th><th>Hours</th><th>Rate</th><th>Amount</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/legaltimeentries/{{ r.pk }}/edit/"><strong>{{ r.case_title }}</strong></a></td>
+        <td>{{ r.attorney|default:"-" }}</td>
+        <td>{{ r.hours|floatformat:2 }}</td>
+        <td>{{ r.rate|floatformat:2 }}</td>
+        <td>{{ r.amount|floatformat:2 }}</td>
+        <td class="actions">
+          <a href="/legaltimeentries/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/legaltimeentries/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No legaltimeentries found.</p>
+    <a href="/legaltimeentries/create/" class="btn btn-primary" style="margin-top:1rem">Create LegalTimeEntry</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
