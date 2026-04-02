@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} LegalTimeEntry | NexusLegal{% endblock %}
+{% block page_title %}{% if editing %}Edit LegalTimeEntry{% else %}New LegalTimeEntry{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Case Title</label>
+        <input type="text" name="case_title" value="{{ record.case_title|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Attorney</label>
+        <input type="text" name="attorney" value="{{ record.attorney|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Hours</label>
+        <input type="number" step="0.01" name="hours" value="{{ record.hours|default:'0' }}">
+      </div>
+      <div class="form-group">
+        <label>Rate</label>
+        <input type="number" step="0.01" name="rate" value="{{ record.rate|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Amount</label>
+        <input type="number" step="0.01" name="amount" value="{{ record.amount|default:'0' }}">
+      </div>
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" name="date" value="{{ record.date|date:'Y-m-d'|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Activity</label>
+        <select name="activity">
+          <option value="research" {% if record.activity == 'research' %}selected{% endif %}>Research</option>
+          <option value="drafting" {% if record.activity == 'drafting' %}selected{% endif %}>Drafting</option>
+          <option value="court" {% if record.activity == 'court' %}selected{% endif %}>Court</option>
+          <option value="meeting" {% if record.activity == 'meeting' %}selected{% endif %}>Meeting</option>
+          <option value="review" {% if record.activity == 'review' %}selected{% endif %}>Review</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea name="description">{{ record.description|default:'' }}</textarea>
+    </div>
+    <div class="form-group">
+      <div class="checkbox-wrapper">
+        <input type="checkbox" name="billable" id="id_billable" {% if record.billable %}checked{% endif %}>
+        <label for="id_billable" style="margin-bottom:0">Billable</label>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} LegalTimeEntry</button>
+      <a href="/legaltimeentries/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
