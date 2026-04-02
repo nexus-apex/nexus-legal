@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} LegalClient | NexusLegal{% endblock %}
+{% block page_title %}{% if editing %}Edit LegalClient{% else %}New LegalClient{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="name" value="{{ record.name|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" value="{{ record.email|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" name="phone" value="{{ record.phone|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Client Type</label>
+        <select name="client_type">
+          <option value="individual" {% if record.client_type == 'individual' %}selected{% endif %}>Individual</option>
+          <option value="corporate" {% if record.client_type == 'corporate' %}selected{% endif %}>Corporate</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Company</label>
+        <input type="text" name="company" value="{{ record.company|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Active Cases</label>
+        <input type="number" name="active_cases" value="{{ record.active_cases|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Total Billed</label>
+        <input type="number" step="0.01" name="total_billed" value="{{ record.total_billed|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="checkbox-wrapper">
+        <input type="checkbox" name="retainer" id="id_retainer" {% if record.retainer %}checked{% endif %}>
+        <label for="id_retainer" style="margin-bottom:0">Retainer</label>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} LegalClient</button>
+      <a href="/legalclients/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
